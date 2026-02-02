@@ -6,6 +6,8 @@ import FixedBillsCard from "../components/FixedBillsCard";
 import TransactionsCard from "../components/TransactionsCard";
 import { currentMonth } from "../utils/dates";
 import NewTransactionModal from "../components/NewTransactionModal";
+import FixedBillsStatusCard from "../components/FixedBillsStatusCard";
+
 
 
 export default function Dashboard() {
@@ -104,12 +106,12 @@ export default function Dashboard() {
       <div className="mt-5 grid gap-4">
         <SummaryCard summary={summary} />
 
+        <TransactionsCard transactions={transactions} loading={loading} />
+
         <div className="grid gap-4 md:grid-cols-2">
           <FixedBillsCard bills={bills} onToggle={onToggleBill} onCreate={onCreateFixedBill} busy={busy} />
-          {/* se você tiver o form de lançamento, pode colocar aqui depois */}
+           <FixedBillsStatusCard bills={bills} />
         </div>
-
-        <TransactionsCard transactions={transactions} loading={loading} />
       </div>
 
       <div className="mt-6 text-xs text-(--muted)">
