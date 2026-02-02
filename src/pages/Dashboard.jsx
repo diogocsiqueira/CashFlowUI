@@ -5,6 +5,8 @@ import SummaryCard from "../components/SummaryCard";
 import FixedBillsCard from "../components/FixedBillsCard";
 import TransactionsCard from "../components/TransactionsCard";
 import { currentMonth } from "../utils/dates";
+import NewTransactionModal from "../components/NewTransactionModal";
+
 
 export default function Dashboard() {
   const [month, setMonth] = useState(currentMonth());
@@ -12,6 +14,8 @@ export default function Dashboard() {
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
   const [bills, setBills] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [newTxOpen, setNewTxOpen] = useState(false);
+
 
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -112,6 +116,24 @@ export default function Dashboard() {
         {loading ? "Sincronizando..." : "Sincronizado"}
       </div>
     </div>
+
+    <NewTransactionModal
+      open={newTxOpen}
+      loading={busy}
+      onClose={() => setNewTxOpen(false)}
+      onSubmit={onCreateTransaction}
+    />
+
+    <button
+      onClick={() => setNewTxOpen(true)}
+      className="fixed bottom-5 right-5 sm:bottom-7 sm:right-7 h-14 w-14 rounded-full bg-[#111] text-white shadow-lg
+                hover:bg-black active:scale-95 transition flex items-center justify-center text-3xl leading-none"
+      aria-label="Adicionar transação"
+      title="Adicionar transação"
+    >
+      +
+    </button>
+
   </div>
 );
 
