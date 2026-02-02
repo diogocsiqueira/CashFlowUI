@@ -1,19 +1,10 @@
 import { useMemo, useState } from "react";
 import { todayISO } from "../utils/dates";
 
-const CATEGORIES = [
-  { value: "ALMOCO_TRABALHO", label: "Almoço trabalho" },
-  { value: "DELIVERY", label: "Delivery" },
-  { value: "MERCADO", label: "Mercado" },
-  { value: "TRANSPORTE", label: "Transporte" },
-  { value: "LAZER", label: "Lazer" },
-  { value: "OUTROS", label: "Outros" },
-];
-
 export default function NewTransactionModal({ open, loading, onClose, onSubmit }) {
   const [type, setType] = useState("EXPENSE");
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("OUTROS");
+  const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
 
   const numericAmount = useMemo(() => {
@@ -24,19 +15,19 @@ export default function NewTransactionModal({ open, loading, onClose, onSubmit }
   function reset() {
     setType("EXPENSE");
     setAmount("");
-    setCategory("OUTROS");
+    setCategory("");
     setDescription("");
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (numericAmount <= 0) return;
+    if (numericAmount <= 0 || !category.trim()) return;
 
     await onSubmit({
       type,
       amount: Number(numericAmount.toFixed(2)),
       date: todayISO(),
-      category,
+      category: category.trim(),
       description: description.trim() || null,
     });
 
@@ -58,14 +49,14 @@ export default function NewTransactionModal({ open, loading, onClose, onSubmit }
           <div>
             <div className="text-base font-bold text-(--text)">Nova transação</div>
             <div className="mt-1 text-sm text-(--muted)">
-              Um lançamento rápido, sem bagunça.
+              Registre com clareza, sem pressa.
             </div>
           </div>
 
           <button
             disabled={loading}
             onClick={() => { reset(); onClose(); }}
-            className="rounded-xl border border-(--border) px-3 py-2 text-sm text-(--text) hover:bg-black/3 disabled:opacity-50"
+            className="rounded-xl border border-(--border) px-3 py-2 text-sm text-(--text) hover:bg-black/5 cursor-pointer disabled:opacity-50"
           >
             Fechar
           </button>
@@ -78,21 +69,22 @@ export default function NewTransactionModal({ open, loading, onClose, onSubmit }
               type="button"
               onClick={() => setType("EXPENSE")}
               className={[
-                "flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition",
+                "flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition cursor-pointer",
                 type === "EXPENSE"
-                  ? "bg-black/6 text-(--text)"
+                  ? "bg-black/10 text-(--text)"
                   : "text-(--muted) hover:text-(--text)",
               ].join(" ")}
             >
               Gasto
             </button>
+
             <button
               type="button"
               onClick={() => setType("INCOME")}
               className={[
-                "flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition",
+                "flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition cursor-pointer",
                 type === "INCOME"
-                  ? "bg-black/6 text-(--text)"
+                  ? "bg-black/10 text-(--text)"
                   : "text-(--muted) hover:text-(--text)",
               ].join(" ")}
             >
@@ -100,28 +92,22 @@ export default function NewTransactionModal({ open, loading, onClose, onSubmit }
             </button>
           </div>
 
-          {/* Valor + Categoria */}
-          <div className="grid grid-cols-2 gap-2">
-            <input
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              inputMode="decimal"
-              placeholder="Valor"
-              className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
-            />
+          {/* Valor */}
+          <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            inputMode="decimal"
+            placeholder="Valor"
+            className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+          />
 
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Categoria livre */}
+          <input
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="Nome da transação (ex: Almoço)"
+            className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+          />
 
           {/* Descrição */}
           <input
@@ -131,16 +117,15 @@ export default function NewTransactionModal({ open, loading, onClose, onSubmit }
             className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
           />
 
-          {/* Botão salvar */}
           <button
-            disabled={loading || numericAmount <= 0}
-            className="rounded-2xl bg-[#111] px-4 py-3 font-semibold text-white hover:bg-black disabled:opacity-50"
+            disabled={loading || numericAmount <= 0 || !category.trim()}
+            className="rounded-2xl bg-[#111] px-4 py-3 font-semibold text-white hover:bg-black cursor-pointer disabled:opacity-50"
           >
             {loading ? "Salvando..." : "Salvar"}
           </button>
 
           <div className="text-xs text-(--muted)">
-            Dica: você pode usar vírgula no valor (ex: 26,50).
+            Dica: escreva como você falaria (“almoço trabalho”, “mercado mês”).
           </div>
         </form>
       </div>
