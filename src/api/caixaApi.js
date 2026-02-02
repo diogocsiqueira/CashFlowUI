@@ -18,4 +18,8 @@ export const caixaApi = {
 
   unpayFixedBill: (month, billId) =>
     http.post(`/api/months/${month}/fixed-bills/${billId}/unpay`).then((r) => r.data),
+
+  createFixedBill: (payload) =>
+  http.post("/api/fixed-bills", payload).then((r) => r.data),
+
 };

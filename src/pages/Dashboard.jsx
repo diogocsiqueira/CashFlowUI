@@ -72,6 +72,20 @@ export default function Dashboard() {
     }
   }
 
+  async function onCreateFixedBill(payload) {
+  setBusy(true);
+  setError("");
+  try {
+    await caixaApi.createFixedBill(payload);
+    await reload(month);
+  } catch (e) {
+    setError(e?.response?.data?.message || e?.message || "Erro ao criar conta fixa");
+  } finally {
+    setBusy(false);
+  }
+}
+
+
  return (
   <div className="min-h-screen bg-(--bg) text-(--text)">
     <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:py-10">
@@ -87,7 +101,7 @@ export default function Dashboard() {
         <SummaryCard summary={summary} />
 
         <div className="grid gap-4 md:grid-cols-2">
-          <FixedBillsCard bills={bills} onToggle={onToggleBill} busy={busy} />
+          <FixedBillsCard bills={bills} onToggle={onToggleBill} onCreate={onCreateFixedBill} busy={busy} />
           {/* se você tiver o form de lançamento, pode colocar aqui depois */}
         </div>
 

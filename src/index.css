@@ -7,16 +7,30 @@
   --muted: #6B7280;
   --border: rgba(17,17,17,.08);
   --shadow: 0 10px 25px rgba(17,17,17,.06);
+
+  /* BOTÕES */
+  --btn-bg: #111111;
+  --btn-text: #FFFFFF;
+  --btn-muted-bg: rgba(17,17,17,.05);
+  --btn-muted-text: #111111;
 }
 
+
 html[data-theme="dark"] {
-  --bg: #0F1115;          /* fundo geral */
-  --surface: #181B21;    /* cards */
+  --bg: #0F1115;
+  --surface: #181B21;
   --text: #EDEDED;
   --muted: #9CA3AF;
   --border: rgba(255,255,255,.08);
   --shadow: 0 10px 30px rgba(0,0,0,.6);
+
+  /* BOTÕES */
+  --btn-bg: #EDEDED;          /* botão claro no dark */
+  --btn-text: #0F1115;        /* texto escuro */
+  --btn-muted-bg: rgba(255,255,255,.08);
+  --btn-muted-text: #EDEDED;
 }
+
 
 
 

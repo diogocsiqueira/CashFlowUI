@@ -15,9 +15,6 @@ export default function MonthPicker({ month, setMonth }) {
 
       <div>
         <div className="text-2xl font-black tracking-tight">Caixa</div>
-        <div className="mt-1 text-sm text-(--muted) capitalize">
-          {monthLabel(month)}
-        </div>
       </div>
 
       <input
