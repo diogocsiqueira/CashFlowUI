@@ -7,6 +7,9 @@ import TransactionsCard from "../components/TransactionsCard";
 import { currentMonth } from "../utils/dates";
 import NewTransactionModal from "../components/NewTransactionModal";
 import FixedBillsStatusCard from "../components/FixedBillsStatusCard";
+import { authApi } from "../api/authApi";
+import { useTheme } from "../hooks/useTheme";
+
 
 
 
@@ -22,6 +25,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const { toggleTheme } = useTheme();
+
 
   async function reload(selectedMonth = month) {
     setLoading(true);
@@ -42,6 +47,14 @@ export default function Dashboard() {
       setLoading(false);
     }
   }
+
+  async function onLogout() {
+  try {
+    await authApi.logout();
+  } finally {
+    window.location.href = "/login";
+  }
+}
 
   useEffect(() => {
     reload(month);
@@ -95,7 +108,28 @@ export default function Dashboard() {
  return (
   <div className="min-h-screen bg-(--bg) text-(--text)">
     <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:py-10">
-      <MonthPicker month={month} setMonth={setMonth} />
+
+      {/* Topbar */}
+      <div className="flex items-start justify-between gap-3">
+        <MonthPicker month={month} setMonth={setMonth} />
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className="rounded-2xl border border-(--border) bg-(--surface) px-3 py-2 text-sm hover:opacity-80"
+            title="Alternar tema"
+          >
+            🌓
+          </button>
+
+          <button
+            onClick={onLogout}
+            className="rounded-2xl border border-(--border) bg-(--surface) px-3 py-2 text-sm hover:opacity-80"
+          >
+            Sair
+          </button>
+        </div>
+      </div>
 
       {error && (
         <div className="mt-4 rounded-2xl border border-(--border) bg-(--surface) p-3 text-sm text-red-600 shadow-(--shadow)">
@@ -105,12 +139,16 @@ export default function Dashboard() {
 
       <div className="mt-5 grid gap-4">
         <SummaryCard summary={summary} />
-
         <TransactionsCard transactions={transactions} loading={loading} />
 
         <div className="grid gap-4 md:grid-cols-2">
-          <FixedBillsCard bills={bills} onToggle={onToggleBill} onCreate={onCreateFixedBill} busy={busy} />
-           <FixedBillsStatusCard bills={bills} />
+          <FixedBillsCard
+            bills={bills}
+            onToggle={onToggleBill}
+            onCreate={onCreateFixedBill}
+            busy={busy}
+          />
+          <FixedBillsStatusCard bills={bills} />
         </div>
       </div>
 
@@ -135,8 +173,11 @@ export default function Dashboard() {
     >
       +
     </button>
-
   </div>
 );
+
+
+
+
 
 }
