@@ -1,77 +1,113 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { todayISO } from "../utils/dates";
 
-export default function NewTransactionModal({ open, loading, onClose, onSubmit }) {
+export default function NewTransactionModal({
+  open,
+  loading = false,
+  onClose,
+  onSubmit,
+  categories = [],
+  onOpenCreateCategory,
+  transaction = null,
+}) {
+  const isEditing = Boolean(transaction?.id);
+
   const [type, setType] = useState("EXPENSE");
+  const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (!open) return;
+
+    setType(transaction?.type || "EXPENSE");
+    setName(transaction?.name || "");
+    setAmount(transaction?.amount ? String(transaction.amount).replace(".", ",") : "");
+    setCategoryId(transaction?.categoryId ? String(transaction.categoryId) : "");
+    setDescription(transaction?.description || "");
+  }, [open, transaction]);
 
   const numericAmount = useMemo(() => {
     const n = Number(String(amount).replace(",", "."));
     return Number.isFinite(n) ? n : 0;
   }, [amount]);
 
+  const canSave = !loading && numericAmount > 0 && name.trim().length > 0;
+
   function reset() {
     setType("EXPENSE");
+    setName("");
     setAmount("");
-    setCategory("");
+    setCategoryId("");
     setDescription("");
+  }
+
+  function handleClose() {
+    if (loading) return;
+    reset();
+    onClose?.();
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (numericAmount <= 0 || !category.trim()) return;
+    if (!canSave) return;
 
-    await onSubmit({
+    await onSubmit?.({
+      id: transaction?.id,
+      name: name.trim(),
       type,
       amount: Number(numericAmount.toFixed(2)),
-      date: todayISO(),
-      category: category.trim(),
+      date: transaction?.date || todayISO(),
+      categoryId: categoryId ? Number(categoryId) : null,
       description: description.trim() || null,
     });
 
     reset();
-    onClose();
+    onClose?.();
   }
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      <div
-        className="absolute inset-0 bg-black/35"
-        onClick={loading ? undefined : () => { reset(); onClose(); }}
+    <div className="fixed inset-0 z-50 grid place-items-center p-6">
+      <button
+        type="button"
+        aria-label="Fechar modal"
+        onClick={handleClose}
+        className="absolute inset-0 bg-black/35 backdrop-blur-sm"
       />
 
-      <div className="relative w-full sm:max-w-md m-3 rounded-3xl border border-(--border) bg-(--surface) p-5 shadow-[0_30px_80px_rgba(0,0,0,.20)]">
-        <div className="flex items-start justify-between gap-3">
+      <div className="relative w-full max-w-2xl rounded-3xl border border-(--border) bg-(--surface) p-6 shadow-[0_30px_80px_rgba(0,0,0,.22)]">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-base font-bold text-(--text)">Nova transação</div>
-            <div className="mt-1 text-sm text-(--muted)">
-              Registre com clareza, sem pressa.
-            </div>
+            <h2 className="text-xl font-extrabold text-(--text)">
+              {isEditing ? "Editar transação" : "Nova transação"}
+            </h2>
+            <p className="mt-1 text-sm text-(--muted)">
+              Informe os dados da movimentação financeira.
+            </p>
           </div>
 
           <button
+            type="button"
             disabled={loading}
-            onClick={() => { reset(); onClose(); }}
-            className="rounded-xl border border-(--border) px-3 py-2 text-sm text-(--text) hover:bg-black/5 cursor-pointer disabled:opacity-50"
+            onClick={handleClose}
+            className="rounded-xl border border-(--border) px-3 py-2 text-sm font-semibold text-(--text) transition hover:opacity-75 disabled:opacity-50"
           >
             Fechar
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 grid gap-3">
-          {/* Tipo */}
-          <div className="flex rounded-2xl border border-(--border) bg-(--surface) p-1">
+        <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
+          <div className="grid grid-cols-2 gap-2 rounded-2xl border border-(--border) p-1">
             <button
               type="button"
               onClick={() => setType("EXPENSE")}
               className={[
-                "flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition cursor-pointer",
+                "rounded-xl px-4 py-3 text-sm font-bold transition",
                 type === "EXPENSE"
-                  ? "bg-black/10 text-(--text)"
+                  ? "bg-red-100 text-red-700"
                   : "text-(--muted) hover:text-(--text)",
               ].join(" ")}
             >
@@ -82,9 +118,9 @@ export default function NewTransactionModal({ open, loading, onClose, onSubmit }
               type="button"
               onClick={() => setType("INCOME")}
               className={[
-                "flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition cursor-pointer",
+                "rounded-xl px-4 py-3 text-sm font-bold transition",
                 type === "INCOME"
-                  ? "bg-black/10 text-(--text)"
+                  ? "bg-emerald-100 text-emerald-700"
                   : "text-(--muted) hover:text-(--text)",
               ].join(" ")}
             >
@@ -92,41 +128,80 @@ export default function NewTransactionModal({ open, loading, onClose, onSubmit }
             </button>
           </div>
 
-          {/* Valor */}
-          <input
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            inputMode="decimal"
-            placeholder="Valor"
-            className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
-          />
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="grid gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wide text-(--muted)">
+                Nome
+              </span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ex: Mercado"
+                className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+              />
+            </label>
 
-          {/* Categoria livre */}
-          <input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="Nome da transação (ex: Almoço)"
-            className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
-          />
+            <label className="grid gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wide text-(--muted)">
+                Valor
+              </span>
+              <input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                inputMode="decimal"
+                placeholder="0,00"
+                className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+              />
+            </label>
+          </div>
 
-          {/* Descrição */}
-          <input
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Descrição (opcional)"
-            className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
-          />
+          <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+            <label className="grid gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wide text-(--muted)">
+                Categoria
+              </span>
+              <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+              >
+                <option value="">Sem categoria</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => onOpenCreateCategory?.()}
+              className="rounded-2xl border border-(--border) px-4 py-3 text-sm font-semibold text-(--text) transition hover:opacity-75 disabled:opacity-50"
+            >
+              + Categoria
+            </button>
+          </div>
+
+          <label className="grid gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-(--muted)">
+              Descrição
+            </span>
+            <input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Opcional"
+              className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+            />
+          </label>
 
           <button
-            disabled={loading || numericAmount <= 0 || !category.trim()}
-            className="rounded-2xl bg-[#111] px-4 py-3 font-semibold text-white hover:bg-black cursor-pointer disabled:opacity-50"
+            disabled={!canSave}
+            className="rounded-2xl bg-[#111] px-4 py-3 font-bold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? "Salvando..." : "Salvar"}
+            {loading ? "Salvando..." : isEditing ? "Salvar alterações" : "Salvar transação"}
           </button>
-
-          <div className="text-xs text-(--muted)">
-            Dica: escreva como você falaria (“almoço trabalho”, “mercado mês”).
-          </div>
         </form>
       </div>
     </div>

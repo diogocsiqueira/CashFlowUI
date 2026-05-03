@@ -1,39 +1,69 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #FAFAFA;
+  --bg: #EEF3F0;
   --surface: #FFFFFF;
-  --text: #111111;
-  --muted: #6B7280;
-  --border: rgba(17,17,17,.08);
-  --shadow: 0 10px 25px rgba(17,17,17,.06);
 
-  /* BOTÕES */
-  --btn-bg: #111111;
+  --text: #0D1B1E;
+  --muted: #64748B;
+
+  --border: rgba(13, 27, 30, 0.09);
+  --shadow: 0 10px 30px rgba(13, 27, 30, 0.08);
+
+  /* ASCENDA BRAND */
+  --brand-primary: #123C69;   /* azul montanha/profundo */
+  --brand-secondary: #1F7A5C; /* verde altitude */
+  --brand-accent: #F4B942;    /* dourado topo/conquista */
+
+  --accent-primary: var(--brand-primary);
+  --accent-success: #22C55E;
+  --accent-danger: #DC2626;
+  --accent-warning: #F59E0B;
+
+  --surface-soft: #F6F8F7;
+  --surface-muted: rgba(18, 60, 105, 0.06);
+
+  --btn-bg: var(--brand-primary);
   --btn-text: #FFFFFF;
-  --btn-muted-bg: rgba(17,17,17,.05);
-  --btn-muted-text: #111111;
-}
 
+  --btn-muted-bg: rgba(18, 60, 105, 0.08);
+  --btn-muted-text: var(--brand-primary);
+}
 
 html[data-theme="dark"] {
-  --bg: #0F1115;
-  --surface: #181B21;
-  --text: #EDEDED;
-  --muted: #9CA3AF;
-  --border: rgba(255,255,255,.08);
-  --shadow: 0 10px 30px rgba(0,0,0,.6);
+  --bg: #071013;
+  --surface: #0E1A20;
 
-  /* BOTÕES */
-  --btn-bg: #EDEDED;          /* botão claro no dark */
-  --btn-text: #0F1115;        /* texto escuro */
-  --btn-muted-bg: rgba(255,255,255,.08);
-  --btn-muted-text: #EDEDED;
+  --text: #EAF2F4;
+  --muted: #94A3B8;
+
+  --border: rgba(234, 242, 244, 0.08);
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+
+  /* ASCENDA BRAND */
+  --brand-primary: #7DD3FC;   /* azul claro tech */
+  --brand-secondary: #34D399; /* verde neon controlado */
+  --brand-accent: #FACC15;    /* topo dourado */
+
+  --accent-primary: var(--brand-primary);
+  --accent-success: #22C55E;
+  --accent-danger: #F87171;
+  --accent-warning: #FACC15;
+
+  --surface-soft: #13242B;
+  --surface-muted: rgba(125, 211, 252, 0.08);
+
+  --btn-bg: var(--brand-primary);
+  --btn-text: #071013;
+
+  --btn-muted-bg: rgba(125, 211, 252, 0.10);
+  --btn-muted-text: var(--brand-primary);
 }
 
 
-
-
+/* =========================
+   GLOBAL
+========================= */
 html, body {
   background: var(--bg);
   color: var(--text);
@@ -41,4 +71,61 @@ html, body {
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 0.28s ease-in-out;
 }

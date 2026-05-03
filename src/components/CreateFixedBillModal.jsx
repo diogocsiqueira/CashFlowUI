@@ -5,10 +5,13 @@ export default function CreateFixedBillModal({
   loading = false,
   onClose,
   onCreate,
+  categories = [],
+  onOpenCreateCategory,
 }) {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [dueDay, setDueDay] = useState(10);
+  const [categoryId, setCategoryId] = useState("");
 
   const parsedAmount = useMemo(() => {
     const n = Number(String(amount).replace(",", "."));
@@ -24,42 +27,38 @@ export default function CreateFixedBillModal({
     setName("");
     setAmount("");
     setDueDay(10);
+    setCategoryId("");
   }
 
   function close() {
     if (loading) return;
     reset();
-    onClose();
+    onClose?.();
   }
 
   async function submit(e) {
     e.preventDefault();
     if (!canSave) return;
 
-    await onCreate({
+    await onCreate?.({
       name: name.trim(),
       amount: Number(parsedAmount.toFixed(2)),
       dueDay: Number(dueDay),
+      categoryId: categoryId ? Number(categoryId) : null,
     });
 
     reset();
-    onClose();
+    onClose?.();
   }
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      <div className="absolute inset-0 bg-black/30" onClick={close} />
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+      <div className="absolute inset-0 bg-black/35" onClick={close} />
 
-      <div className="relative w-full sm:max-w-md m-3 rounded-3xl
-                      border border-(--border)
-                      bg-(--surface)
-                      p-5 shadow-[0_30px_80px_rgba(0,0,0,.20)">
-
-        <div className="text-base font-bold text-(--text)">
-          Nova conta fixa
-        </div>
+      <div className="relative m-3 w-full rounded-3xl border border-(--border) bg-(--surface) p-5 shadow-[0_30px_80px_rgba(0,0,0,.20)] sm:max-w-md">
+        <div className="text-base font-bold text-(--text)">Nova conta fixa</div>
 
         <div className="mt-1 text-sm text-(--muted)">
           Preencha e salve. Ela vai aparecer no checklist do mês.
@@ -72,25 +71,19 @@ export default function CreateFixedBillModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ex: Internet"
-              className="rounded-xl border border-(--border)
-                         bg-transparent px-3 py-2.5
-                         text-sm text-(--text)
-                         outline-none focus:ring-2 focus:ring-black/10"
+              className="rounded-xl border border-(--border) bg-transparent px-3 py-2.5 text-sm text-(--text) outline-none focus:ring-2 focus:ring-black/10"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="grid gap-1">
-              <label className="text-xs text-(--muted)">Valor</label>
+              <label className="text-xs text-(--muted)">Valor padrão</label>
               <input
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 inputMode="decimal"
                 placeholder="120,00"
-                className="rounded-xl border border-(--border)
-                           bg-transparent px-3 py-2.5
-                           text-sm text-(--text)
-                           outline-none focus:ring-2 focus:ring-black/10"
+                className="rounded-xl border border-(--border) bg-transparent px-3 py-2.5 text-sm text-(--text) outline-none focus:ring-2 focus:ring-black/10"
               />
             </div>
 
@@ -101,36 +94,53 @@ export default function CreateFixedBillModal({
                 onChange={(e) => setDueDay(e.target.value)}
                 inputMode="numeric"
                 placeholder="10"
-                className="rounded-xl border border-(--border)
-                           bg-transparent px-3 py-2.5
-                           text-sm text-(--text)
-                           outline-none focus:ring-2 focus:ring-black/10"
+                className="rounded-xl border border-(--border) bg-transparent px-3 py-2.5 text-sm text-(--text) outline-none focus:ring-2 focus:ring-black/10"
               />
               <div className="text-[11px] text-(--muted)">Dia 1 a 31</div>
             </div>
           </div>
 
-          <div className="mt-3 flex gap-2 justify-end">
-            {/* Cancelar */}
+          <div className="grid gap-2">
+            <div className="grid gap-1">
+              <label className="text-xs text-(--muted)">Categoria</label>
+              <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="rounded-xl border border-(--border) bg-transparent px-3 py-2.5 text-sm text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+              >
+                <option value="">Sem categoria</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => onOpenCreateCategory?.()}
+              className="justify-self-start rounded-xl border border-(--border) px-3 py-2 text-xs font-semibold text-(--text) hover:bg-black/5 disabled:opacity-50"
+            >
+              + Nova categoria
+            </button>
+          </div>
+
+          <div className="mt-3 flex justify-end gap-2">
             <button
               type="button"
               disabled={loading}
               onClick={close}
-              className="px-4 py-2 rounded-xl
-                         border border-(--border)
-                         bg-(--btn-muted-bg)
-                         text-(--btn-muted-text)
-                         hover:opacity-90 disabled:opacity-50">
+              className="rounded-xl border border-(--border) bg-(--btn-muted-bg) px-4 py-2 text-(--btn-muted-text) hover:opacity-90 disabled:opacity-50"
+            >
               Cancelar
             </button>
 
-            {/* Salvar */}
             <button
               disabled={!canSave}
-              className="px-4 py-2 rounded-xl font-semibold
-                         bg-(--btn-bg)
-                         text-(--btn-text)
-                         hover:opacity-90 disabled:opacity-50">
+              className="rounded-xl bg-(--btn-bg) px-4 py-2 font-semibold text-(--btn-text) hover:opacity-90 disabled:opacity-50"
+            >
               {loading ? "Salvando..." : "Salvar"}
             </button>
           </div>

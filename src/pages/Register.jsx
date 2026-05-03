@@ -1,100 +1,146 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { authApi } from "../api/authApi";
 import { useTheme } from "../hooks/useTheme";
-import { useEffect } from "react";
+import BrandLogo from "../components/BrandLogo";
+import GoatMascot from "../components/GoatMascot";
 
 export default function Register() {
   const nav = useNavigate();
-  const { toggleTheme, initTheme } = useTheme();
+  const { initTheme, toggleTheme } = useTheme();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [mascotState, setMascotState] = useState("idle");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  
-
-useEffect(() => {
-  initTheme();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
-
+  useEffect(() => {
+    initTheme();
+  }, []);
 
   async function onSubmit(e) {
     e.preventDefault();
     setBusy(true);
     setError("");
+    setMascotState("idle");
+
     try {
       await authApi.register({ email, password });
       nav("/login", { replace: true });
     } catch (e) {
-      setError(e?.response?.data?.message || e?.message || "Falha no cadastro");
+      setMascotState("error");
+      setError(e?.response?.data?.message || "Erro no cadastro");
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-(--bg) text-(--text) flex items-center justify-center px-4 relative">
-      {/* 🔘 Botão de tema (overlay, não afeta layout) */}
-      <button
-        onClick={toggleTheme}
-        className="absolute top-4 right-4 rounded-lg border border-(--border) bg-(--surface)
-                   px-2 py-1 text-xs shadow-sm hover:bg-black/5 transition"
-        title="Alternar tema"
-      >
-        🌓
-      </button>
+    <div className="grid min-h-screen bg-(--bg) text-(--text) lg:grid-cols-2 animate-fade-in">
 
-      <div className="w-full max-w-sm rounded-3xl border border-(--border) bg-(--surface) p-6 shadow-(--shadow)">
-        <div className="text-xl font-semibold">Criar conta</div>
-        <div className="mt-1 text-sm text-(--muted)">Registro rápido</div>
+      {/* ESQUERDA */}
+      <div className="relative hidden min-h-screen flex-col overflow-hidden bg-(--surface-soft) p-10 lg:flex">
+        <button
+          onClick={toggleTheme}
+          className="absolute right-6 top-6 z-20 rounded-xl border border-(--border) bg-(--surface) px-3 py-2 text-sm shadow-(--shadow)"
+        >
+          🌓
+        </button>
 
-        {error && (
-          <div className="mt-4 rounded-2xl border border-(--border) bg-(--surface) p-3 text-sm text-red-600">
-            {error}
+        <div className="relative z-10 flex h-full flex-col">
+          <BrandLogo size="hero" />
+
+          <div className="mt-10 max-w-xl">
+            <h2 className="text-5xl font-black leading-tight">
+              Comece sua subida.
+            </h2>
+
+            <p className="mt-4 text-lg text-(--muted)">
+              Controle financeiro não é sobre números — é sobre liberdade.
+            </p>
           </div>
-        )}
 
-        <form className="mt-5 grid gap-3" onSubmit={onSubmit}>
-          <label className="grid gap-1">
-            <span className="text-xs text-(--muted)">Email</span>
+          <div className="mt-auto pb-6 pt-10">
+            <GoatMascot state={mascotState} variant="hero" />
+          </div>
+        </div>
+      </div>
+
+      {/* DIREITA */}
+      <div className="relative flex items-center justify-center p-6">
+        <button
+          onClick={toggleTheme}
+          className="absolute right-5 top-5 rounded-xl border border-(--border) bg-(--surface) px-3 py-2 text-sm shadow-(--shadow) lg:hidden"
+        >
+          🌓
+        </button>
+
+        <form
+          onSubmit={onSubmit}
+          className="w-full max-w-md rounded-3xl border border-(--border) bg-(--surface) p-8 shadow-(--shadow) animate-slide-up"
+        >
+          <div className="mb-6 lg:hidden">
+            <BrandLogo compact />
+          </div>
+
+          <h2 className="text-2xl font-black">Criar conta</h2>
+
+          {error && (
+            <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500">
+              {error}
+            </div>
+          )}
+
+          <div className="mt-6">
+            <label className="text-sm font-bold">Email</label>
             <input
-              className="rounded-2xl border border-(--border) bg-transparent px-3 py-2 outline-none"
+              type="email"
+              className="mt-2 w-full rounded-xl border border-(--border) bg-(--surface-soft) px-4 py-3 outline-none focus:ring-2 focus:ring-(--brand-primary)"
               value={email}
+              onFocus={() => setMascotState("watching")}
+              onBlur={() => setMascotState("idle")}
               onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
               required
             />
-          </label>
+          </div>
 
-          <label className="grid gap-1">
-            <span className="text-xs text-(--muted)">Senha</span>
+          <div className="mt-4 relative">
+            <label className="text-sm font-bold">Senha</label>
             <input
-              className="rounded-2xl border border-(--border) bg-transparent px-3 py-2 outline-none"
-              type="password"
+              type={showPassword ? "text" : "password"}
+              className="mt-2 w-full rounded-xl border border-(--border) bg-(--surface-soft) px-4 py-3 pr-12 outline-none focus:ring-2 focus:ring-(--brand-primary)"
               value={password}
+              onFocus={() => setMascotState("password")}
+              onBlur={() => setMascotState("idle")}
               onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
               required
             />
-          </label>
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-[42px] text-sm text-(--muted)"
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+          </div>
 
           <button
             disabled={busy}
-            className="mt-2 rounded-2xl bg-[#111] text-white py-2 font-semibold hover:bg-black active:scale-[0.99] transition disabled:opacity-60"
+            className="mt-6 w-full rounded-xl bg-(--btn-bg) py-3 font-bold text-(--btn-text)"
           >
             {busy ? "Criando..." : "Criar conta"}
           </button>
-        </form>
 
-        <div className="mt-4 text-sm text-(--muted)">
-          Já tem conta?{" "}
-          <Link className="text-(--text) underline" to="/login">
-            Entrar
-          </Link>
-        </div>
+          <p className="mt-4 text-sm text-(--muted)">
+            Já tem conta?{" "}
+            <Link to="/login" className="font-bold text-(--brand-primary)">
+              Entrar
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
   );
