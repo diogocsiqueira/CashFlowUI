@@ -10,14 +10,17 @@ import FixedBillsStatusCard from "../components/FixedBillsStatusCard";
 import CreateCategoryModal from "../components/CreateCategoryModal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import Sidebar from "../components/Sidebar";
+import MobileNav from "../components/MobileNav";
 import ReportsStats from "../components/ReportsStats";
 import { authApi } from "../api/authApi";
 import { useTheme } from "../hooks/useTheme";
+import GoalsPage from "../components/GoalsPage";
 
 const pageTitles = {
   overview: "Visão geral",
   transactions: "Transações",
   fixedBills: "Contas fixas",
+  goals: "Metas",
   categories: "Categorias",
   stats: "Estatísticas",
 };
@@ -218,7 +221,9 @@ function OverviewBills({ bills, onGoToBills }) {
                 </p>
               </div>
 
-              <strong className="shrink-0 text-sm">{money(getBillValue(bill))}</strong>
+              <strong className="shrink-0 text-sm">
+                {money(getBillValue(bill))}
+              </strong>
             </div>
           ))}
         </div>
@@ -592,6 +597,10 @@ export default function Dashboard() {
       );
     }
 
+    if (activePage === "goals") {
+      return <GoalsPage categories={categories} />;
+    }
+
     if (activePage === "categories") {
       return (
         <section className="rounded-3xl border border-(--border) bg-(--surface) p-6 shadow-(--shadow)">
@@ -644,8 +653,9 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-(--bg) text-(--text)">
       <Sidebar activePage={activePage} onChangePage={setActivePage} />
+      <MobileNav activePage={activePage} onChangePage={setActivePage} />
 
-      <div className="min-h-screen min-w-0 p-4 xl:ml-[280px] xl:p-6">
+      <div className="min-h-screen min-w-0 p-4 pb-32 xl:ml-[280px] xl:p-6">
         <header className="mb-6 rounded-3xl border border-(--border) bg-(--surface) p-5 shadow-(--shadow) xl:p-6">
           <div className="flex flex-col gap-5 2xl:flex-row 2xl:items-center 2xl:justify-between">
             <div className="min-w-0">
@@ -658,7 +668,7 @@ export default function Dashboard() {
               </h1>
 
               <p className="mt-2 max-w-2xl text-sm text-(--muted)">
-                Controle mensal de ganhos, gastos, contas fixas e movimentações.
+                Controle mensal de ganhos, gastos, contas fixas, metas e movimentações.
               </p>
             </div>
 
@@ -705,14 +715,9 @@ export default function Dashboard() {
 
         <main className="min-w-0">{renderContent()}</main>
 
-        <footer className="mt-6 text-xs text-(--muted) flex items-center justify-between opacity-70">
-          <span>
-            {loading ? "Sincronizando..." : "Sincronizado"}
-          </span>
-
-          <span>
-            © 2026 CashFlow · by Diogo
-          </span>
+        <footer className="mt-6 flex items-center justify-between text-xs text-(--muted) opacity-70">
+          <span>{loading ? "Sincronizando..." : "Sincronizado"}</span>
+          <span>© 2026 Ascenda · by Diogo</span>
         </footer>
       </div>
 
