@@ -17,6 +17,8 @@ export default function NewTransactionModal({
   const [amount, setAmount] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState(todayISO());
+  const [showDate, setShowDate] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -26,6 +28,8 @@ export default function NewTransactionModal({
     setAmount(transaction?.amount ? String(transaction.amount).replace(".", ",") : "");
     setCategoryId(transaction?.categoryId ? String(transaction.categoryId) : "");
     setDescription(transaction?.description || "");
+    setDate(transaction?.date || todayISO());
+    setShowDate(Boolean(transaction?.date));
   }, [open, transaction]);
 
   const numericAmount = useMemo(() => {
@@ -41,6 +45,8 @@ export default function NewTransactionModal({
     setAmount("");
     setCategoryId("");
     setDescription("");
+    setDate(todayISO());
+    setShowDate(false);
   }
 
   function handleClose() {
@@ -58,7 +64,7 @@ export default function NewTransactionModal({
       name: name.trim(),
       type,
       amount: Number(numericAmount.toFixed(2)),
-      date: transaction?.date || todayISO(),
+      date,
       categoryId: categoryId ? Number(categoryId) : null,
       description: description.trim() || null,
     });
@@ -195,6 +201,31 @@ export default function NewTransactionModal({
               className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
             />
           </label>
+
+          <div className="rounded-2xl border border-(--border) bg-(--surface) p-3">
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => setShowDate((v) => !v)}
+              className="text-xs font-semibold text-(--muted) transition hover:text-(--text) disabled:opacity-50"
+            >
+              {showDate ? `Data: ${date}` : "Alterar data"}
+            </button>
+
+            {showDate && (
+              <label className="mt-3 grid gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-(--muted)">
+                  Data
+                </span>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-(--text) outline-none focus:ring-2 focus:ring-black/10"
+                />
+              </label>
+            )}
+          </div>
 
           <button
             disabled={!canSave}
