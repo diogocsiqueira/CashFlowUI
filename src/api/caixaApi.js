@@ -60,4 +60,26 @@ export const caixaApi = {
         },
       })
       .then((r) => r.data),
+
+        // ===== Goals =====
+  listGoals: () =>
+    http.get("/api/goals").then((r) => r.data),
+
+  getGoal: (id) =>
+    http.get(`/api/goals/${id}`).then((r) => r.data),
+
+  createGoal: (payload) =>
+    http.post("/api/goals", payload).then((r) => r.data),
+
+  updateGoal: (id, payload) =>
+    http.put(`/api/goals/${id}`, payload).then((r) => r.data),
+
+  deleteGoal: (id) =>
+    http.delete(`/api/goals/${id}`).then((r) => r.data),
+
+  listGoalContributions: (goalId) =>
+    http.get(`/api/goals/${goalId}/contributions`).then((r) => r.data),
+
+  createGoalContribution: (goalId, payload) =>
+    http.post(`/api/goals/${goalId}/contributions`, payload).then((r) => r.data),
 };

@@ -2,6 +2,7 @@ const items = [
   { id: "overview", label: "Visão geral", icon: "📊" },
   { id: "transactions", label: "Transações", icon: "💸" },
   { id: "fixedBills", label: "Contas fixas", icon: "📌" },
+  { id: "goals", label: "Metas", icon: "🎯" },
   { id: "categories", label: "Categorias", icon: "🏷️" },
   { id: "stats", label: "Estatísticas", icon: "📈" },
 ];
@@ -11,7 +12,7 @@ export default function Sidebar({ activePage, onChangePage }) {
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[280px] border-r border-(--border) bg-(--surface) px-4 py-5 xl:flex xl:flex-col">
       <div className="mb-8 rounded-3xl bg-(--surface-soft) px-5 py-5">
         <div className="text-xl font-black tracking-tight text-(--text)">
-          CahFlow
+          Ascenda
         </div>
         <div className="mt-1 text-xs font-semibold text-(--muted)">
           Controle financeiro
@@ -43,7 +44,6 @@ export default function Sidebar({ activePage, onChangePage }) {
           );
         })}
       </nav>
-
     </aside>
   );
 }
