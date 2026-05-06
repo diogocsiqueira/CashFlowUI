@@ -1,82 +1,219 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@200;300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
-  --bg: #EEF3F0;
-  --surface: #FFFFFF;
+  /* =========================
+     BASE
+  ========================= */
+  --bg: #CED6DB;
 
-  --text: #0D1B1E;
-  --muted: #64748B;
+  --surface: #E4EAEE;
+  --surface-soft: #D7E0E6;
+  --surface-muted: rgba(95, 111, 146, 0.12);
 
-  --border: rgba(13, 27, 30, 0.09);
-  --shadow: 0 10px 30px rgba(13, 27, 30, 0.08);
+  --text: #0C0726;
+  --muted: #5F6F92;
 
-  /* ASCENDA BRAND */
-  --brand-primary: #123C69;   /* azul montanha/profundo */
-  --brand-secondary: #1F7A5C; /* verde altitude */
-  --brand-accent: #F4B942;    /* dourado topo/conquista */
+  --border: rgba(12, 7, 38, 0.12);
 
-  --accent-primary: var(--brand-primary);
-  --accent-success: #22C55E;
-  --accent-danger: #DC2626;
-  --accent-warning: #F59E0B;
+  --shadow: 0 14px 35px rgba(12, 7, 38, 0.12);
+  --shadow-strong: 0 24px 60px rgba(12, 7, 38, 0.18);
 
-  --surface-soft: #F6F8F7;
-  --surface-muted: rgba(18, 60, 105, 0.06);
+  /* =========================
+     ASCENDA BRAND
+  ========================= */
+  --brand-primary: #1A1A4A;
+  --brand-secondary: #37406E;
+  --brand-accent: #5F6F92;
 
-  --btn-bg: var(--brand-primary);
-  --btn-text: #FFFFFF;
+  --accent-primary: #37406E;
 
-  --btn-muted-bg: rgba(18, 60, 105, 0.08);
-  --btn-muted-text: var(--brand-primary);
+  --accent-success: #2F8F6B;
+  --accent-danger: #B94A48;
+  --accent-warning: #B98528;
+
+  /* =========================
+     BUTTONS
+  ========================= */
+  --btn-bg: #37406E;
+  --btn-text: #CED6DB;
+
+  --btn-hover: #1A1A4A;
+
+  --btn-muted-bg: rgba(55, 64, 110, 0.10);
+  --btn-muted-text: #1A1A4A;
+
+  /* =========================
+     FEATURE CARDS
+  ========================= */
+  --card-feature-bg: #5F6F92;
+  --card-feature-text: #CED6DB;
+
+  /* =========================
+     INPUTS
+  ========================= */
+  --input-bg: transparent;
+  --input-border: rgba(12, 7, 38, 0.35);
+  --input-focus: #37406E;
+  --input-placeholder: #5F6F92;
+
+  /* =========================
+     RADIUS
+  ========================= */
+  --radius-card: 14px;
+  --radius-button: 999px;
+  --radius-input: 10px;
+
+  /* =========================
+     TYPOGRAPHY
+  ========================= */
+  --font-brand: "Bebas Neue", sans-serif;
+  --font-body: "Poppins", sans-serif;
 }
 
 html[data-theme="dark"] {
-  --bg: #071013;
-  --surface: #0E1A20;
+  /* =========================
+     BASE
+  ========================= */
+  --bg: #0C0726;
 
-  --text: #EAF2F4;
-  --muted: #94A3B8;
+  --surface: #15123A;
+  --surface-soft: #1A1A4A;
+  --surface-muted: rgba(145, 163, 182, 0.10);
 
-  --border: rgba(234, 242, 244, 0.08);
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+  --text: #CED6DB;
+  --muted: #91A3B6;
 
-  /* ASCENDA BRAND */
-  --brand-primary: #7DD3FC;   /* azul claro tech */
-  --brand-secondary: #34D399; /* verde neon controlado */
-  --brand-accent: #FACC15;    /* topo dourado */
+  --border: rgba(206, 214, 219, 0.10);
 
-  --accent-primary: var(--brand-primary);
-  --accent-success: #22C55E;
-  --accent-danger: #F87171;
-  --accent-warning: #FACC15;
+  --shadow: 0 18px 45px rgba(0, 0, 1, 0.35);
+  --shadow-strong: 0 28px 70px rgba(0, 0, 1, 0.50);
 
-  --surface-soft: #13242B;
-  --surface-muted: rgba(125, 211, 252, 0.08);
+  /* =========================
+     ASCENDA BRAND
+  ========================= */
+  --brand-primary: #CED6DB;
+  --brand-secondary: #91A3B6;
+  --brand-accent: #5F6F92;
 
-  --btn-bg: var(--brand-primary);
-  --btn-text: #071013;
+  --accent-primary: #91A3B6;
 
-  --btn-muted-bg: rgba(125, 211, 252, 0.10);
-  --btn-muted-text: var(--brand-primary);
+  --accent-success: #5FAF8B;
+  --accent-danger: #D26A68;
+  --accent-warning: #D8A94A;
+
+  /* =========================
+     BUTTONS
+  ========================= */
+  --btn-bg: #CED6DB;
+  --btn-text: #0C0726;
+
+  --btn-hover: #91A3B6;
+
+  --btn-muted-bg: rgba(206, 214, 219, 0.08);
+  --btn-muted-text: #CED6DB;
+
+  /* =========================
+     FEATURE CARDS
+  ========================= */
+  --card-feature-bg: #5F6F92;
+  --card-feature-text: #CED6DB;
+
+  /* =========================
+     INPUTS
+  ========================= */
+  --input-bg: transparent;
+  --input-border: rgba(206, 214, 219, 0.35);
+  --input-focus: #91A3B6;
+  --input-placeholder: #91A3B6;
 }
 
 
 /* =========================
    GLOBAL
 ========================= */
-html, body {
+html,
+body,
+#root {
+  min-height: 100%;
   background: var(--bg);
   color: var(--text);
+  font-family: var(--font-body);
+}
+
+body {
+  margin: 0;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 * {
+  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-soft);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-accent);
+}
+
+
+/* =========================
+   INPUT DEFAULTS
+========================= */
+input,
+textarea,
+select {
+  background: var(--input-bg);
+  color: var(--text);
+  border-color: var(--input-border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--input-focus);
+}
+
+
+/* =========================
+   ANIMATIONS
+========================= */
 @keyframes fade-in {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -87,39 +224,49 @@ html, body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.4s ease;
-}
-
-.animate-slide-up {
-  animation: slide-up 0.5s ease;
-}
-
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-4px);
   }
+
   75% {
     transform: translateX(4px);
   }
+}
+
+
+/* =========================
+   UTILITIES
+========================= */
+.animate-fade-in {
+  animation: fade-in 0.4s ease;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease;
 }
 
 .animate-float {
